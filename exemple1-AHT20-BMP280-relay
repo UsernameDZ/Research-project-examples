@@ -1,0 +1,127 @@
+//incloure les biblioteques
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP280.h>
+#include <LiquidCrystal_I2C.h>
+#include <Adafruit_AHTX0.h>
+
+//definir els sensors
+Adafruit_BMP280 bmp;
+Adafruit_AHTX0 aht;
+
+//definir els pins de relés
+const int leftRelay = 22;
+const int rightRelay = 23;
+
+//configurarar la pantalla
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+//fer una variable per guardar temps de l´última lectura
+const unsigned long UPDATE_INTERVAL = 500;
+unsigned long lastUpdate = 0;
+
+
+void setup() {
+  Serial.begin(115200); //començar bauts a 115200
+  Wire.begin(6, 7); //començar I2C en els pins 6(SDA) i 7(SCL), per ESP32C6. Per ESP32 WROOM són 21 i 22
+
+  //establir mode de funcionament pels pins de relé
+  pinMode(leftRelay, OUTPUT); 
+  pinMode(rightRelay, OUTPUT);
+
+  //esperar fins que es detecta AHT20
+  while (!aht.begin()) {
+    Serial.println(F("AHT20 problems"));
+    delay(1000);
+  }
+  Serial.println(F("AHT20 ok"));
+
+  //esperar fins que es detecta BMP280
+  while (!bmp.begin()) {
+    Serial.println(F("BMP280 problems"));
+    delay(1000);
+  }
+  Serial.println(F("BMP280 ok"));
+
+  //inicar la pantalla
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  unsigned long currentMillis = millis(); 
+
+  if (currentMillis - lastUpdate >= UPDATE_INTERVAL) { //verifiquem si ha passat un temps determinat d`ùltima lectura
+    lastUpdate = currentMillis;
+
+    sensors_event_t humidity, temp; //variables per AHT20
+    aht.getEvent(&humidity, &temp); //llegir els valors de AHT20
+
+    if (temp.temperature > 25){ //un condicional: si la tempperatura és més alta que 25, fer següent
+      digitalWrite(leftRelay, LOW); //obrir el relé, LED s´encén 
+      Serial.println("Left relay to LOW (on)");
+      lcd.setCursor(12, 1); //escriure l´estat de relé en la pantalla
+      lcd.write("On");
+    } else { //en el cas que la temperatura és més baixa que 25, fer següent
+      Serial.println("Left relay to HIGH (off)"); 
+      digitalWrite(leftRelay, HIGH); //tancar el relé, LED s´apaga
+      lcd.setCursor(12, 1); //escriure l´estat de relé en la pantalla
+      lcd.write("Of");
+    }
+
+    if (humidity.relative_humidity > 60){ //un condicional: si l´humitat és més alta que 60, fer següent
+      digitalWrite(rightRelay, LOW); //obrir el relé, LED s´encén
+      Serial.println("Right relay to LOW (on)");
+      lcd.setCursor(14, 1); //escriure l´estat de relé en la pantalla
+      lcd.write("On");
+    } else { //en el cas que l´humitat és més baixa que 60, fer següent
+      Serial.println("Right relay to HIGH (off)");
+      digitalWrite(rightRelay, HIGH); //tancar el relé, LED s´apaga
+      lcd.setCursor(14, 1); //escriure l´estat de relé en la pantalla
+      lcd.write("On");
+    }
+
+    //tot de baix escriu les dades dels sensors en la consola
+    Serial.print("Temperature (AHT20): ");
+    Serial.print(temp.temperature + 273.15);
+    Serial.print("K");
+    Serial.print(" | ");
+    Serial.print(temp.temperature);
+    Serial.println("°C");
+
+    Serial.print("Humidity: ");
+    Serial.print(humidity.relative_humidity);
+    Serial.println("%");
+
+    Serial.print("Pressure: ");
+    Serial.print(bmp.readPressure() / 101325.0);
+    Serial.print("atm");
+    Serial.print(" | ");
+    Serial.print(bmp.readPressure() / 100.0);
+    Serial.println("hPa");
+
+    Serial.print("Temperature (BMP280): ");
+    Serial.print(bmp.readTemperature() + 273.15);
+    Serial.print("K");
+    Serial.print(" | ");
+    Serial.print(bmp.readTemperature());
+    Serial.println("°C");
+
+    Serial.print("Altitude: ");
+    Serial.print(bmp.readAltitude());
+    Serial.println("m");
+    Serial.println();
+
+    lcd.setCursor(0, 0);
+    lcd.print("T: ");
+    lcd.print(temp.temperature, 1);
+
+    lcd.print(" H: ");
+    lcd.print(humidity.relative_humidity, 1);
+
+    lcd.setCursor(0, 1);
+    lcd.print("P: ");
+    lcd.print(bmp.readPressure() / 101325.0, 1);
+    lcd.print("atm");
+  }
+}
