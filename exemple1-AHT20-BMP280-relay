@@ -61,24 +61,24 @@ void loop() {
       digitalWrite(leftRelay, LOW); //obrir el relé, LED s´encén 
       Serial.println("Left relay to LOW (on)");
       lcd.setCursor(12, 1); //escriure l´estat de relé en la pantalla
-      lcd.write("On");
+      lcd.print("On");
     } else { //en el cas que la temperatura és més baixa que 25, fer següent
       Serial.println("Left relay to HIGH (off)"); 
       digitalWrite(leftRelay, HIGH); //tancar el relé, LED s´apaga
       lcd.setCursor(12, 1); //escriure l´estat de relé en la pantalla
-      lcd.write("Of");
+      lcd.print("Of");
     }
 
     if (humidity.relative_humidity > 60){ //un condicional: si l´humitat és més alta que 60, fer següent
       digitalWrite(rightRelay, LOW); //obrir el relé, LED s´encén
       Serial.println("Right relay to LOW (on)");
       lcd.setCursor(14, 1); //escriure l´estat de relé en la pantalla
-      lcd.write("On");
+      lcd.print("On");
     } else { //en el cas que l´humitat és més baixa que 60, fer següent
       Serial.println("Right relay to HIGH (off)");
       digitalWrite(rightRelay, HIGH); //tancar el relé, LED s´apaga
       lcd.setCursor(14, 1); //escriure l´estat de relé en la pantalla
-      lcd.write("On");
+      lcd.print("Of");
     }
 
     //tot de baix escriu les dades dels sensors en la consola
