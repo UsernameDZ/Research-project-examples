@@ -22,18 +22,26 @@
 #include <UniversalTelegramBot.h>
 
 
+
 // ============================================================
 // WI-FI CONFIGURATION
+// REPLACE WITH YOUR DETAILS (WIFI NAME (SSID), WIFI PASSWORD, TELEGRAM BOT API, TELEGRAM ID)
 // ============================================================
 
-const char* ssid = "XXX";
-const char* password = "XXX";
+
+const char* ssid = "REPLACE_WITH_YOUR_SSID";
+const char* password = "REPLACE_WITH_YOUR_PASSWORD";
+
+
 
 
 // Telegram bot token and chat ID
-String BOTtoken = "XXX";
-String CHAT_ID = "XXX";
-
+String BOTtoken = "XXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+// Use @myidbot to find out the chat ID of a person or a group
+// Also note that you need to press "start" on a bot before it can
+// send you messages
+String CHAT_ID = "XXXXXXXXXX";
+*/
 
 // ============================================================
 // GLOBAL STATE VARIABLES
