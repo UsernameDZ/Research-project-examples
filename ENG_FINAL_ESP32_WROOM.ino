@@ -4,14 +4,14 @@
 //
 // Sensors:
 // AHT20 + BMP280 #1:
-// SCL - GPIO18
-// SDA - GPIO19
+// SDA - GPIO18
+// SCL - GPIO19
 // VDD - 3.3V
 // GND - GND
 //
 // AHT20 + BMP280 #2:
-// SCL - GPIO25
-// SDA - GPIO26
+// SDA - GPIO25
+// SCL- GPIO26
 // VDD - 3.3V
 // GND - GND
 //
