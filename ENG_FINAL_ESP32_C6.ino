@@ -18,6 +18,11 @@
 // GND - GND
 // VCC - VCC/5V
 //
+// HALL SENSOR:
+// VCC - VCC
+// SIGNAL - 2
+// GND - GND
+//
 // LCD DISPLAY:
 // VCC - VCC/5V
 // SDA - 6
